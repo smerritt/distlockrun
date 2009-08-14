@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'rubygems' # XXX
+require 'distlockrun'
+
+EventMachine.run do
+  EventMachine.start_server "0.0.0.0", 7890, DistLockrun::Server
+end
