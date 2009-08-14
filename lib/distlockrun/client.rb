@@ -3,6 +3,11 @@ module DistLockrun
 
     KEEPALIVE_INTERVAL = 5   # seconds
     
+    def debug_puts(str)
+      # just funnel everything through here so it's easy to turn off
+      puts str
+    end
+
     def self.command=(c)
       @@command = c
     end
@@ -16,11 +21,11 @@ module DistLockrun
       @buffer << data
       if @buffer =~ /^yes\n/
         @buffer = ''
-        puts "got the lock"
+        debug_puts "got the lock"
         start_command
       elsif @buffer =~ /^no\n/
         @buffer = ''
-        puts "oh well, better luck next time"
+        debug_puts "oh well, better luck next time"
         exit 0
       end
     end
@@ -33,7 +38,7 @@ module DistLockrun
       if pid
         @pid = pid
       else
-        puts "going to exec #{@@command.inspect}"
+        debug_puts "going to exec #{@@command.inspect}"
         exec *@@command
       end
 
