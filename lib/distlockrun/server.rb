@@ -25,11 +25,13 @@ module DistLockrun
     end
 
     def post_init
+      debug_puts "got connection"
       @buffer = ""
       set_comm_inactivity_timeout(60)
     end
 
     def receive_data(data)
+      debug_puts "received data #{data}"
       @buffer << data
       @buffer = '' if @buffer.length > MAX_BUFFER_SIZE
       message, *data = extract_message!
@@ -48,9 +50,11 @@ module DistLockrun
         send_data "you're already running a command, bozo\n"
         close_connection_after_writing
       elsif CommandTracker.running?(cmd)
+        debug_puts "not letting them run #{cmd}"
         send_data "no\n"
         close_connection_after_writing
       else
+        debug_puts "letting them run #{cmd}"
         @cmd = cmd
         CommandTracker.run!(cmd)
         send_data "yes\n"

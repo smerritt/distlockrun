@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'rubygems' # XXX
+require 'getoptlong'
+require 'distlockrun'
+
+# TODO:
+# * make a config file so you don't always have to specify --server
+
+options_processor = GetoptLong.new(
+  ["--server", '-s', GetoptLong::REQUIRED_ARGUMENT]
+  )
+
+options = {}
+options_processor.each do |k,v|
+  options[k] = v
+end
+
+
+DistLockrun::Client.command = ARGV
+
+EventMachine.run do
+  EventMachine.connect options["--server"], 7890, DistLockrun::Client
+end
