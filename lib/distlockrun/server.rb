@@ -26,6 +26,7 @@ module DistLockrun
 
     def post_init
       @buffer = ""
+      set_comm_inactivity_timeout(60)
     end
 
     def receive_data(data)
