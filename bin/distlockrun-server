@@ -1,8 +1,23 @@
 #!/usr/bin/env ruby
 
-require 'rubygems' # XXX
-require 'distlockrun'
+begin
+  require 'getoptlong'
+  require 'distlockrun'
+rescue LoadError
+  require 'rubygems'
+  require 'getoptlong'
+  require 'distlockrun'
+end
+
+options_processor = GetoptLong.new(
+  ["--port", '-p', GetoptLong::OPTIONAL_ARGUMENT]
+  )
+
+options = {}
+options_processor.each do |k,v|
+  options[k] = v
+end
 
 EventMachine.run do
-  EventMachine.start_server "0.0.0.0", 7890, DistLockrun::Server
+  EventMachine.start_server "0.0.0.0", (options["--port"] || 7890), DistLockrun::Server
 end

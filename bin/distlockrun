@@ -1,24 +1,37 @@
 #!/usr/bin/env ruby
 
-require 'rubygems' # XXX
-require 'getoptlong'
-require 'distlockrun'
+begin
+  require 'getoptlong'
+  require 'distlockrun'
+rescue LoadError
+  require 'rubygems'
+  require 'getoptlong'
+  require 'distlockrun'
+end
 
 # TODO:
 # * make a config file so you don't always have to specify --server
 
 options_processor = GetoptLong.new(
-  ["--server", '-s', GetoptLong::REQUIRED_ARGUMENT]
+  ["--server", '-s', GetoptLong::REQUIRED_ARGUMENT],
+  ["--port", '-p', GetoptLong::OPTIONAL_ARGUMENT]
   )
 
-options = {}
-options_processor.each do |k,v|
-  options[k] = v
-end
+server = nil
+server_port = 7890
 
+options = {}
+options_processor.each do |opt, arg|
+  case opt
+  when "--port"
+    server_port = arg.to_i
+  when "--server"
+    server = arg
+  end
+end
 
 DistLockrun::Client.command = ARGV
 
 EventMachine.run do
-  EventMachine.connect options["--server"], 7890, DistLockrun::Client
+  EventMachine.connect server, server_port, DistLockrun::Client
 end
