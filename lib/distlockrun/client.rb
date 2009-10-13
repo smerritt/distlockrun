@@ -5,7 +5,7 @@ module DistLockrun
     
     def debug_puts(str)
       # just funnel everything through here so it's easy to turn off
-      puts str
+      # puts str
     end
 
     def self.command=(c)
